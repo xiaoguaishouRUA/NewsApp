@@ -3,6 +3,7 @@ package com.example.newsapp;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Fragment;
+
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
