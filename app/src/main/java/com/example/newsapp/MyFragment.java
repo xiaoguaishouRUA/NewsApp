@@ -1,7 +1,5 @@
 package com.example.newsapp;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,7 +10,7 @@ public class MyFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.my_fragment,null);
+        View view = inflater.inflate(R.layout.fragment_my,null);
         return view;
     }
 }
