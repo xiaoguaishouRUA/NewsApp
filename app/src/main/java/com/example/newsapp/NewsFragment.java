@@ -83,7 +83,6 @@ public class NewsFragment extends Fragment {
                         Type type = new TypeToken<NewsBean>(){}.getType();
                         NewsBean newsBean = new Gson().fromJson(result, type);
                         newsList = newsBean.getNewslist();
-                        System.out.println(newsList);
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {

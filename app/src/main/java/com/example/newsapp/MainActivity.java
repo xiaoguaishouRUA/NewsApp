@@ -14,11 +14,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.bumptech.glide.Glide;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -38,27 +40,52 @@ import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
 
-    private String[] newsTypeList = {"5","7","8","10","12","13","27","17","18"};
-    private String[] titleLsit = {"社会","国内","国际","娱乐","体育","科技","军事","健康","旅游"};
-    private List<NewsFragment> fragmentList = new ArrayList<NewsFragment>();
+
+    private List<Fragment> fragmentList = new ArrayList<Fragment>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        TabLayout tabLayout = findViewById(R.id.news_tab_layout);
-        ViewPager viewPager = findViewById(R.id.news_view_pager);
-        for (String newsType : newsTypeList) {
-            fragmentList.add(new NewsFragment(newsType));
-        }
-        FragmentPagerAdapter adapter = new NewsViewPagerAdapter(getSupportFragmentManager());
+        fragmentList.add(new HomeFragment());
+        fragmentList.add(new PictureFragment());
+        ViewPager viewPager = findViewById(R.id.content_view_pager);
+        viewPager.setOffscreenPageLimit(2);
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nav);
+        FragmentPagerAdapter adapter = new MainAdapter(getSupportFragmentManager());
         viewPager.setAdapter(adapter);
-        tabLayout.setupWithViewPager(viewPager);
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull @NotNull MenuItem item) {
+                switch (item.getItemId()){
+                    case R.id.nav_home:viewPager.setCurrentItem(0);break;
+                    case R.id.nav_picture:viewPager.setCurrentItem(1);break;
+                    default:break;
+                }
+                return false;
+            }
+        });
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                bottomNavigationView.getMenu().getItem(position).setChecked(true);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
     }
 
-    class NewsViewPagerAdapter extends FragmentPagerAdapter {
+    class MainAdapter extends FragmentPagerAdapter {
 
-        public NewsViewPagerAdapter(FragmentManager fm) {
+        public MainAdapter(FragmentManager fm) {
             super(fm);
         }
 
@@ -72,13 +99,7 @@ public class MainActivity extends AppCompatActivity {
             return fragmentList == null ? 0 : fragmentList.size();
         }
 
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return titleLsit[position];
-        }
     }
-
-
 }
 
 
