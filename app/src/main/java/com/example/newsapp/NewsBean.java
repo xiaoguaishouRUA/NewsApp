@@ -5,7 +5,7 @@ import java.util.List;
 public class NewsBean {
     private int code;
     private String message;
-    private List<ResultBean> result;
+    private List<ResultBean> newslist;
 
     public int getCode() {
         return code;
@@ -23,46 +23,45 @@ public class NewsBean {
         this.message = message;
     }
 
-    public List<ResultBean> getResult() {
-        return result;
+    public List<ResultBean> getNewslist() {
+        return newslist;
     }
 
-    public void setResult(List<ResultBean> result) {
-        this.result = result;
+    public void setNewslist(List<ResultBean> newslist) {
+        this.newslist = newslist;
     }
 
     public static class ResultBean {
-        private String path;
-        private String image;
+        private String url;
+        private String picUrl;
         private String title;
-        private String passtime;
+        private String ctime;
+        private String description;
+        private String source;
 
-        public ResultBean(String path,String image,String title,String passtime){
-            this.path = path;
-            this.image = image;
+        public ResultBean(String url, String picUrl, String title, String cime, String description, String source) {
+            this.url = url;
+            this.picUrl = picUrl;
             this.title = title;
-            this.passtime = passtime;
-        }
-        public ResultBean(String image,String title,String passtime){
-            this.image = image;
-            this.title = title;
-            this.passtime = passtime;
+            this.ctime = ctime;
+            this.description = description;
+            this.source = source;
         }
 
-        public String getPath() {
-            return path;
+        public String getUrl() {
+            return url;
         }
 
-        public void setPath(String path) {
-            this.path = path;
+        public void setUrl(String url) {
+            this.url = url;
         }
 
-        public String getImage() {
-            return image;
+        public String getPicUrl() {
+            return picUrl;
         }
 
-        public void setImage(String image) {
-            this.image = image;
+        public void setPicUrl(String picUrl) {
+            this.picUrl = picUrl;
         }
 
         public String getTitle() {
@@ -73,21 +72,39 @@ public class NewsBean {
             this.title = title;
         }
 
-        public String getPasstime() {
-            return passtime;
+        public String getCtime() {
+            return ctime;
         }
 
-        public void setPasstime(String passtime) {
-            this.passtime = passtime;
+        public void setCtime(String ctime) {
+            this.ctime = ctime;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
+        public void setDescription(String description) {
+            this.description = description;
+        }
+
+        public String getSource() {
+            return source;
+        }
+
+        public void setSource(String source) {
+            this.source = source;
         }
 
         @Override
         public String toString() {
             return "ResultBean{" +
-                    "path:'" + path + '\'' +
-                    ", image:'" + image + '\'' +
-                    ", title:'" + title + '\'' +
-                    ", passtime:'" + passtime + '\'' +
+                    ",ctime:'" + ctime + '\'' +
+                    ",title:'" + title + '\'' +
+                    ",description:'" + description + '\'' +
+                    ",picUrl:'" + picUrl + '\'' +
+                    ",url:'" + url + '\'' +
+                    ",source:'" + source + '\''+
                     '}';
         }
     }
