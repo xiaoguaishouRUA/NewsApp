@@ -3,6 +3,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -71,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
                             public void run() {
                                 mAdapter = new NewsRecyclerViewAdapter(newsList);
                                 recyclerView.setAdapter(mAdapter);
-                                mAdapter.notifyDataSetChanged();
+//                                mAdapter.notifyDataSetChanged();
                             }
                         });
 
@@ -110,7 +111,9 @@ public class MainActivity extends AppCompatActivity {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(MainActivity.this, "新闻"+position, Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(MainActivity.this,DetailActivity.class);
+                    intent.putExtra("url",dataList.get(position).getPath());
+                    startActivity(intent);
                 }
             });
         }
