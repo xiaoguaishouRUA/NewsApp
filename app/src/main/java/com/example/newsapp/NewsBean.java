@@ -43,6 +43,11 @@ public class NewsBean {
             this.title = title;
             this.passtime = passtime;
         }
+        public ResultBean(String image,String title,String passtime){
+            this.image = image;
+            this.title = title;
+            this.passtime = passtime;
+        }
 
         public String getPath() {
             return path;
