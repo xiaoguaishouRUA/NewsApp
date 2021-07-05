@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
+        android:name="org.litepal.LitePalApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -12,7 +13,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.NewsApp">
-        <activity android:name=".DetailActivity"></activity>
+        <activity android:name=".Collection"></activity>
+        <activity android:name=".Motto" />
+        <activity android:name=".Information" />
+        <activity android:name=".Register" />
+        <activity android:name=".Index" />
+        <activity android:name=".DetailActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

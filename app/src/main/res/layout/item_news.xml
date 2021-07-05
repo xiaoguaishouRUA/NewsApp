@@ -37,12 +37,11 @@
                 android:text="这是标题"/>
 
             <TextView
-                android:id="@+id/news_description"
+                android:id="@+id/news_passtime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:textSize="10sp"
-                android:maxLines="2"
                 android:textColor="#BFBFBF"
                 android:text="这是描述"/>
         </RelativeLayout>
