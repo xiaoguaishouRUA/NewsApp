@@ -7,12 +7,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager.widget.ViewPager;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -27,7 +23,6 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.newsapp.gson.NewsBean;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -48,14 +43,13 @@ public class Index extends AppCompatActivity {
     private String result;
     private List<NewsBean.ResultBean> newsList = new ArrayList<>();
     private RecyclerView recyclerView;
-
+    private NewsRecyclerViewAdapter mAdapter;
 
     private DrawerLayout mDrawerLayout;
     public TextView tvName;
     //接收传递过来的用户名
     private String main_name;
 
-    private List<Fragment> fragmentList = new ArrayList<Fragment>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -113,60 +107,103 @@ public class Index extends AppCompatActivity {
             }
         });
 
-        fragmentList.add(new HomeFragment());
-        fragmentList.add(new PictureFragment());
-        ViewPager viewPager = findViewById(R.id.content_view_pager);
-        viewPager.setOffscreenPageLimit(2);
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nav);
-        FragmentPagerAdapter adapter = new MainAdapter(getSupportFragmentManager());
-        viewPager.setAdapter(adapter);
-        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+        recyclerView = findViewById(R.id.news_recycler_view);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mAdapter = new NewsRecyclerViewAdapter(newsList);
+        recyclerView.setAdapter(mAdapter);
+        initRequest();
+    }
+
+    private void initRequest() {
+        String url = "https://api.apiopen.top/getWangYiNews";
+        FormBody.Builder builder = new FormBody.Builder();
+//        builder.add("page","1");
+//        builder.add("count","10");
+        OkhttpHelper.postRequest(url,builder,new Callback(){
+
             @Override
-            public boolean onNavigationItemSelected(@NonNull @NotNull MenuItem item) {
-                switch (item.getItemId()){
-                    case R.id.nav_home:viewPager.setCurrentItem(0);break;
-                    case R.id.nav_picture:viewPager.setCurrentItem(1);break;
-                    default:break;
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                new Thread(){
+                    @Override
+                    public void run() {
+                        try {
+                            result = response.body().string();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        System.out.println(result);
+                        Type type = new TypeToken<NewsBean>(){}.getType();
+                        NewsBean newsBean = new Gson().fromJson(result, type);
+                        newsList = newsBean.getResult();
+                        System.out.println(newsList);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                mAdapter = new NewsRecyclerViewAdapter(newsList);
+                                recyclerView.setAdapter(mAdapter);
+//                                mAdapter.notifyDataSetChanged();
+                            }
+                        });
+
+                    }
+                }.start();
+            }
+
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+
+            }
+        });
+    }
+
+    class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerViewAdapter.ViewHolder>{
+
+        private List<NewsBean.ResultBean> dataList;
+
+        NewsRecyclerViewAdapter(List<NewsBean.ResultBean> dataList){
+            this.dataList = dataList;
+        }
+
+        @Override
+        public NewsRecyclerViewAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_news,parent,false);
+
+            return new ViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(NewsRecyclerViewAdapter.ViewHolder holder, int position) {
+            NewsBean.ResultBean news = dataList.get(position);
+            holder.title.setText(news.getTitle());
+            holder.passtime.setText(news.getPasstime());
+            Glide.with(Index.this).load(news.getImage()).into(holder.image);
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(Index.this,DetailActivity.class);
+                    intent.putExtra("url",dataList.get(position).getPath());
+                    startActivity(intent);
                 }
-                return false;
-            }
-        });
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                bottomNavigationView.getMenu().getItem(position).setChecked(true);
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
-    }
-
-    class MainAdapter extends FragmentPagerAdapter {
-
-        public MainAdapter(FragmentManager fm) {
-            super(fm);
+            });
         }
 
         @Override
-        public Fragment getItem(int position) {
-            return fragmentList.get(position);
+        public int getItemCount() {
+            return dataList == null ? 0 : dataList.size();
         }
 
-        @Override
-        public int getCount() {
-            return fragmentList == null ? 0 : fragmentList.size();
+        public class ViewHolder extends RecyclerView.ViewHolder{
+            private TextView title;
+            private TextView passtime;
+            private RoundedImageView image;
+            public ViewHolder(View itemView) {
+                super(itemView);
+                title = itemView.findViewById(R.id.news_title);
+                passtime = itemView.findViewById(R.id.news_passtime);
+                image = itemView.findViewById(R.id.news_image);
+            }
         }
-
     }
-
 
     //加载菜单
     @Override
